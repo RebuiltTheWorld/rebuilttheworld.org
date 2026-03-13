@@ -142,6 +142,11 @@ This repository is intended to support:
 - integration with broader RTW project modules
 - future project linking and public knowledge access
 
+  ## Foundation
+
+- [RTW Core Thesis](docs/foundation/rtw-core-thesis.md)
+- [RTW Core Concepts](docs/foundation/rtw-core-concepts.md)
+- [External Reference Models](docs/references/external-reference-models.md)
 ---
 
 ## Suggested Repository Structure
@@ -153,6 +158,17 @@ rebuilttheworld.org/
 ├── LICENSE-CONTENT.md
 ├── TRADEMARKS.md
 ├── docs/
+│   ├── foundation/
+│   │   ├── rtw-core-thesis.md
+│   │   ├── rtw-core-concepts.md
+│   │   ├── human-ai-collaboration.md
+│   │   └── layer-model.md
+│   ├── references/
+│   │   ├── external-reference-models.md
+│   │   ├── reference-n1-angel-collective.md
+│   │   ├── reference-citta-protocol.md
+│   │   ├── reference-8th-continent.md
+│   │   └── reference-genesis-lineage.md
 │   ├── brand-core.md
 │   ├── site-structure.md
 │   ├── content-system.md
@@ -160,14 +176,40 @@ rebuilttheworld.org/
 │   └── roadmap.md
 ├── content/
 │   ├── pages/
+│   │   ├── home.md
+│   │   ├── about.md
+│   │   ├── manifesto.md
+│   │   ├── system.md
+│   │   ├── archive.md
+│   │   ├── lab.md
+│   │   └── entry.md
 │   ├── manifesto/
+│   │   ├── manifesto-core.md
+│   │   ├── principles.md
+│   │   └── continuity-note.md
 │   ├── signals/
+│   │   ├── index.md
+│   │   └── signal-template.md
 │   ├── archive/
-│   └── lab/
+│   │   ├── genesis/
+│   │   ├── proofs/
+│   │   ├── field-notes/
+│   │   └── releases/
+│   ├── lab/
+│   │   ├── human-ai-lab.md
+│   │   ├── methods.md
+│   │   ├── build-paths.md
+│   │   └── working-models.md
+│   └── protocols/
+│       ├── citta-overview.md
+│       └── protocol-index.md
 ├── public/
 │   ├── images/
 │   ├── icons/
 │   └── documents/
+│       ├── manifestos/
+│       ├── archive/
+│       └── proofs/
 ├── src/
 │   ├── app/
 │   ├── components/
@@ -177,4 +219,13 @@ rebuilttheworld.org/
 └── metadata/
     ├── versions/
     ├── manifests/
-    └── references/
+    ├── references/
+    │   ├── source-register.md
+    │   ├── checksums/
+    │   └── citations.json
+    ├── proofs/
+    │   ├── hashes/
+    │   └── timestamps/
+    └── lineage/
+        ├── document-map.md
+        └── release-log.md
