@@ -126,8 +126,10 @@ Important pages should follow a consistent internal structure:
 5. Main content  
 6. Related modules  
 7. Version  
-8. Archive references  
+8. Archive references
 
+9. - `content/manifesto/children-protection-and-support.md`
+     
 This helps the system remain understandable over time.
 
 ---
