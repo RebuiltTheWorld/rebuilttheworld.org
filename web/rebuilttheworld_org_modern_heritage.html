@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rebuilt The World — Public Gateway</title>
+  <meta name="description" content="Modern, rétegzett nyitóoldal a Rebuilt The World számára: Human & AI, archívum, kontinuitás és jövőépítés." />
+  <style>
+    :root{
+      --bg:#07111b;
+      --bg-soft:#0c1825;
+      --panel:#102233cc;
+      --panel-2:#0b1622cc;
+      --text:#e6eef5;
+      --muted:#98a7b8;
+      --line:#25455d;
+      --accent:#63d0ff;
+      --accent-2:#4aa38d;
+      --warm:#d6c0a3;
+      --shadow:0 20px 60px rgba(0,0,0,.35);
+      --max:1180px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 20% 10%, rgba(99,208,255,.08), transparent 25%),
+        radial-gradient(circle at 80% 0%, rgba(74,163,141,.10), transparent 20%),
+        linear-gradient(180deg, #07111b 0%, #081522 40%, #07111b 100%);
+      min-height:100vh;
+      line-height:1.6;
+      overflow-x:hidden;
+    }
+    body::before{
+      content:"";
+      position:fixed; inset:0;
+      pointer-events:none;
+      opacity:.08;
+      background-image:
+        linear-gradient(rgba(255,255,255,.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+      background-size: 28px 28px, 28px 28px;
+      mask-image: radial-gradient(circle at center, black 50%, transparent 95%);
+    }
+    body::after{
+      content:"";
+      position:fixed; inset:0;
+      pointer-events:none;
+      opacity:.12;
+      background:
+        radial-gradient(circle at 10% 30%, rgba(214,192,163,.28) 0 1px, transparent 1.5px) 0 0/18px 18px;
+      mix-blend-mode:soft-light;
+    }
+    .container{width:min(var(--max), calc(100% - 2rem)); margin:0 auto}
+    .topbar{
+      position:sticky; top:0; z-index:20;
+      backdrop-filter: blur(14px);
+      background:linear-gradient(180deg, rgba(7,17,27,.88), rgba(7,17,27,.65));
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .nav{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:1rem; padding:.95rem 0;
+    }
+    .brand{
+      display:flex; align-items:center; gap:.85rem; text-decoration:none; color:var(--text);
+    }
+    .mark{
+      width:42px; height:42px; border-radius:50%;
+      display:grid; place-items:center;
+      border:1px solid rgba(99,208,255,.35);
+      background:
+        radial-gradient(circle at 30% 30%, rgba(99,208,255,.25), transparent 45%),
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.04);
+      flex:0 0 42px;
+    }
+    .mark svg{width:24px;height:24px;opacity:.92}
+    .brand-title{font-size:.98rem; font-weight:700; letter-spacing:.03em}
+    .brand-sub{font-size:.78rem; color:var(--muted)}
+    .menu{display:flex; flex-wrap:wrap; gap:.75rem; align-items:center}
+    .menu a{
+      color:var(--muted); text-decoration:none; font-size:.95rem;
+      padding:.55rem .8rem; border-radius:999px; transition:.2s ease;
+    }
+    .menu a:hover{color:var(--text); background:rgba(255,255,255,.04)}
+    .hero{padding:5.8rem 0 4.2rem; position:relative}
+    .hero-grid{
+      display:grid; grid-template-columns:1.25fr .85fr; gap:2rem; align-items:end;
+    }
+    .eyebrow{
+      display:inline-flex; gap:.55rem; flex-wrap:wrap; align-items:center;
+      font-size:.82rem; text-transform:uppercase; letter-spacing:.18em; color:var(--warm);
+      margin-bottom:1rem;
+    }
+    .eyebrow span{
+      padding:.2rem .55rem; border:1px solid rgba(214,192,163,.24); border-radius:999px;
+      background:rgba(214,192,163,.06);
+    }
+    h1{
+      font-size:clamp(2.7rem, 8vw, 5.8rem);
+      line-height:.98; letter-spacing:-.04em; margin:.2rem 0 1rem;
+      max-width:11ch;
+    }
+    .lede{
+      max-width:62ch; font-size:1.08rem; color:#d5e0ea;
+      margin-bottom:1.5rem;
+    }
+    .actions{display:flex; flex-wrap:wrap; gap:.85rem; margin-top:1.3rem}
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:.6rem;
+      min-height:48px; padding:0 1rem; border-radius:999px; text-decoration:none; font-weight:650;
+      border:1px solid transparent; transition:.2s ease; box-shadow: var(--shadow);
+    }
+    .btn.primary{
+      color:#04111c; background:linear-gradient(135deg, var(--accent), #b4efff);
+    }
+    .btn.secondary{
+      color:var(--text); background:rgba(255,255,255,.03); border-color:rgba(99,208,255,.22);
+      box-shadow:none;
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .hero-card{
+      background:linear-gradient(180deg, rgba(16,34,51,.88), rgba(11,22,34,.86));
+      border:1px solid rgba(99,208,255,.16);
+      border-radius:28px;
+      padding:1.15rem;
+      box-shadow: var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+    .hero-card::before{
+      content:"";
+      position:absolute; inset:auto -10% 75% auto; width:220px; height:220px; border-radius:50%;
+      background:radial-gradient(circle, rgba(99,208,255,.25), transparent 70%);
+    }
+    .mini-map{
+      padding:1rem; border-radius:22px; border:1px solid rgba(255,255,255,.05);
+      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+    }
+    .mini-label{font-size:.78rem; color:var(--warm); text-transform:uppercase; letter-spacing:.16em}
+    .mini-title{font-size:1.1rem; font-weight:700; margin:.35rem 0 1rem}
+    .layer-list{display:grid; gap:.7rem}
+    .layer-item{
+      display:grid; grid-template-columns:auto 1fr; gap:.85rem; align-items:start;
+      padding:.8rem .85rem; border-radius:18px;
+      background:rgba(255,255,255,.025); border:1px solid rgba(255,255,255,.045);
+    }
+    .layer-no{
+      min-width:2.1rem; height:2.1rem; border-radius:50%; display:grid; place-items:center;
+      background:rgba(99,208,255,.12); color:var(--accent); font-weight:700; font-size:.85rem;
+    }
+    .layer-item b{display:block; margin-bottom:.1rem}
+    section{padding:1.4rem 0 4rem}
+    .section-head{display:grid; gap:.55rem; margin-bottom:1.4rem}
+    .kicker{
+      color:var(--warm); text-transform:uppercase; letter-spacing:.18em; font-size:.8rem;
+    }
+    h2{font-size:clamp(1.8rem, 4vw, 3rem); line-height:1.07; margin:0}
+    .subtext{color:var(--muted); max-width:64ch}
+    .grid-2{display:grid; grid-template-columns:1.05fr .95fr; gap:1.2rem}
+    .card{
+      background:linear-gradient(180deg, rgba(16,34,51,.72), rgba(10,20,32,.78));
+      border:1px solid rgba(255,255,255,.06); border-radius:24px;
+      padding:1.25rem 1.15rem; box-shadow:var(--shadow);
+    }
+    .card h3{margin:.1rem 0 .55rem; font-size:1.22rem}
+    .muted{color:var(--muted)}
+    .quote{
+      border-left:3px solid rgba(214,192,163,.4); padding:1rem 1rem 1rem 1.1rem;
+      background:rgba(214,192,163,.05); border-radius:0 18px 18px 0;
+      color:#ecdfcd;
+    }
+    .pill-row{display:flex; flex-wrap:wrap; gap:.7rem; margin-top:1rem}
+    .pill{
+      border-radius:999px; border:1px solid rgba(255,255,255,.08);
+      padding:.5rem .8rem; color:#d6e3ef; background:rgba(255,255,255,.03);
+      font-size:.92rem;
+    }
+    .layer-grid,.entry-grid,.domain-grid,.memory-grid{
+      display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem;
+    }
+    .layer-card,.entry-card,.domain-card,.memory-card{
+      position:relative; overflow:hidden;
+      border-radius:24px; padding:1.15rem; background:linear-gradient(180deg, rgba(15,30,44,.8), rgba(9,18,29,.84));
+      border:1px solid rgba(255,255,255,.06);
+    }
+    .layer-card::after,.entry-card::after,.domain-card::after{
+      content:""; position:absolute; inset:auto -18% -25% auto; width:180px; height:180px; border-radius:50%;
+      background:radial-gradient(circle, rgba(99,208,255,.12), transparent 70%);
+      pointer-events:none;
+    }
+    .tag{
+      display:inline-block; margin-bottom:.65rem; font-size:.78rem;
+      text-transform:uppercase; letter-spacing:.16em; color:var(--warm);
+    }
+    .domain{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      color:#ccefff; font-size:1rem;
+    }
+    .timeline{
+      position:relative; padding-left:1rem; margin-top:.8rem;
+    }
+    .timeline::before{
+      content:""; position:absolute; left:.22rem; top:.25rem; bottom:.25rem; width:1px; background:rgba(255,255,255,.12);
+    }
+    .t-item{position:relative; padding-left:1rem; margin:.8rem 0}
+    .t-item::before{
+      content:""; position:absolute; left:-.03rem; top:.35rem; width:.55rem; height:.55rem; border-radius:50%;
+      background:var(--accent); box-shadow:0 0 0 6px rgba(99,208,255,.1);
+    }
+    .footer{
+      padding:2.5rem 0 3rem; border-top:1px solid rgba(255,255,255,.07);
+      color:var(--muted);
+    }
+    .footer-grid{display:grid; grid-template-columns:1.2fr .8fr; gap:1rem; align-items:start}
+    .small{font-size:.92rem}
+    .heritage-line{
+      margin-top:1.1rem; padding-top:1rem; border-top:1px dashed rgba(214,192,163,.24);
+      color:#dfcfba;
+    }
+    @media (max-width: 980px){
+      .hero-grid,.grid-2,.footer-grid,.layer-grid,.entry-grid,.domain-grid,.memory-grid{grid-template-columns:1fr}
+      .hero{padding-top:4.2rem}
+      .menu{display:none}
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container nav">
+      <a class="brand" href="#top">
+        <div class="mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="8.6" stroke="currentColor" stroke-width="1.2" opacity=".9"/>
+            <path d="M5.5 12h13M12 5.5c2 1.7 3 4 3 6.5S14 16.8 12 18.5M12 5.5c-2 1.7-3 4-3 6.5s1 4.8 3 6.5" stroke="currentColor" stroke-width="1.05" opacity=".85"/>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-title">Rebuilt The World</div>
+          <div class="brand-sub">public gateway · Human &amp; AI · continuity</div>
+        </div>
+      </a>
+      <nav class="menu" aria-label="Fő navigáció">
+        <a href="#about">Mi ez</a>
+        <a href="#layers">Rétegek</a>
+        <a href="#mission">Küldetés</a>
+        <a href="#domains">Ökoszisztéma</a>
+        <a href="#entry">Belépési utak</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow">
+            <span>Human &amp; AI</span>
+            <span>Archívum</span>
+            <span>Kontinuitás</span>
+            <span>Jövőépítés</span>
+          </div>
+          <h1>Építs tisztán. Őrizd meg az értelmet. Vidd tovább.</h1>
+          <p class="lede">
+            A <strong>Rebuilt The World</strong> egy nyugodt, rétegzett belépési felület azoknak,
+            akik nem csak tartalmat akarnak fogyasztani, hanem értelmezhető rendszert,
+            emlékezetet és átadható örökséget akarnak építeni.
+          </p>
+          <p class="lede muted">
+            Ez az oldal modern felületet használ, de nem dobja el a múlt értékét:
+            a sötét, intézményes karakter mögött ott marad az archívum, a dokumentum, a nyom és a felelősség.
+          </p>
+          <div class="actions">
+            <a class="btn primary" href="#layers">A rendszer megnyitása</a>
+            <a class="btn secondary" href="#domains">Domain térkép</a>
+            <a class="btn secondary" href="#memory">Múlt és örökség</a>
+          </div>
+        </div>
+
+        <aside class="hero-card">
+          <div class="mini-map">
+            <div class="mini-label">Olvasható rendszerkép</div>
+            <div class="mini-title">Nyilvános réteg → működő réteg → technikai mélység</div>
+            <div class="layer-list">
+              <div class="layer-item">
+                <div class="layer-no">01</div>
+                <div><b>Public Gateway</b><span class="muted">küldetés, értelmezés, első belépés</span></div>
+              </div>
+              <div class="layer-item">
+                <div class="layer-no">02</div>
+                <div><b>Living LAB</b><span class="muted">aktív együttműködés, módszerek, kísérletek</span></div>
+              </div>
+              <div class="layer-item">
+                <div class="layer-no">03</div>
+                <div><b>Archive</b><span class="muted">jegyzetek, verziók, időn át olvasható nyomok</span></div>
+              </div>
+              <div class="layer-item">
+                <div class="layer-no">04</div>
+                <div><b>Proof Mindset</b><span class="muted">manifesztek, hash-ek, timestamp, eredet</span></div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="about">
+      <div class="container">
+        <div class="section-head">
+          <div class="kicker">Mi ez</div>
+          <h2>Olvasható kapu egy mélyebb rendszerhez</h2>
+          <div class="subtext">
+            Nem egyszerű landing oldal, és nem puszta dokumentumtár. Egy olyan felület,
+            amely előbb kontextust ad, utána mélységet.
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <article class="card">
+            <h3>Mitől más?</h3>
+            <p>
+              A felület nem harsány termékoldalként viselkedik. Inkább úgy épül fel, mint egy
+              alakuló digitális intézmény: tiszta tipográfiával, nyugodt ritmussal és átgondolt
+              szekciókkal.
+            </p>
+            <p class="muted">
+              A látogató először megérti, hogy mi ez, aztán meglátja a rétegeket, és csak utána
+              lép be a mélyebb archív vagy labor irányokba.
+            </p>
+            <div class="pill-row">
+              <span class="pill">strukturált</span>
+              <span class="pill">emberközpontú</span>
+              <span class="pill">jövőálló</span>
+            </div>
+          </article>
+
+          <aside class="card">
+            <div class="quote">
+              „A modernitás itt nem szakítás a múlttal, hanem fegyelmezett továbbépítés:
+              új felület, régi súly, megőrzött értelem.”
+            </div>
+            <div class="heritage-line">
+              <strong>Múlt értéke:</strong> dokumentumok, bizonyítható eredet, hosszú távú olvashatóság,
+              generációkon át átadható tudás.
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section id="layers">
+      <div class="container">
+        <div class="section-head">
+          <div class="kicker">Rétegek</div>
+          <h2>Rétegzett rendszer, nem egyetlen lap</h2>
+          <div class="subtext">
+            Az oldal első verziója egyszerre ad orientációt, működési térképet és jövőbeni mélységet.
+          </div>
+        </div>
+
+        <div class="layer-grid">
+          <article class="layer-card">
+            <span class="tag">01 · Public Layer</span>
+            <h3>Nyilvános kapu</h3>
+            <p>Definíció, küldetés, első belépési pontok és egy stabil első olvasat a teljes RTW világról.</p>
+          </article>
+          <article class="layer-card">
+            <span class="tag">02 · Living LAB</span>
+            <h3>Élő együttműködés</h3>
+            <p>Ahol a Human &amp; AI közös munka láthatóvá válik: vázlatok, modellek, módszerek és aktív kísérletek.</p>
+          </article>
+          <article class="layer-card">
+            <span class="tag">03 · Archive Layer</span>
+            <h3>Megőrzött emlékezet</h3>
+            <p>Jegyzetek, kiadások, hosszú távon visszaolvasható dokumentumok és értelmezhető nyomok.</p>
+          </article>
+          <article class="layer-card">
+            <span class="tag">04 · Proof Layer</span>
+            <h3>Bizonyítható kontinuitás</h3>
+            <p>Verziók, manifest fájlok, időbélyegek, hash-ek és minden, ami csökkenti a jövőbeli bizonytalanságot.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="mission">
+      <div class="container">
+        <div class="section-head">
+          <div class="kicker">Küldetés</div>
+          <h2>Egy építhető jövőnek védenie kell a sérülékenyeket</h2>
+          <div class="subtext">
+            A technológia itt nem önmagáért jelenik meg. Akkor ér valamit, ha méltóságot,
+            hozzáférést és valódi esélyt is hordoz.
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <article class="card">
+            <h3>Miért létezik ez a tér?</h3>
+            <p>
+              Sok ember valódi mélységgel, tehetséggel és hosszú távú potenciállal rendelkezik,
+              mégis kívül marad a hagyományos intézményi utak látóterén. Ez az oldal nekik is szól.
+            </p>
+            <p class="muted">
+              A cél nem zajt gyártani, hanem olyan struktúrát adni, amelyben a gondolat, a munka
+              és a fejlődés nem tűnik el nyomtalanul.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Valódi erkölcsi pillér</h3>
+            <p>
+              Kiemelt irány a gyerekek és fiatalok támogatása - különösen azoké, akik betegek,
+              hátrányból indulnak, fogyatékossággal élnek, vagy egyszerűen túl könnyen maradnak észrevétlenek.
+            </p>
+            <p class="muted">
+              Ez nem díszítő szöveg. Egy jövőről beszélő rendszernek a rejtett emberi értéket is
+              komolyan kell vennie.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="domains">
+      <div class="container">
+        <div class="section-head">
+          <div class="kicker">Ökoszisztéma</div>
+          <h2>Egy világ, több belépési felület</h2>
+          <div class="subtext">
+            A domain-ek nem versenyeznek egymással. Külön szerepet visznek ugyanabban a rendszerben.
+          </div>
+        </div>
+
+        <div class="domain-grid">
+          <article class="domain-card">
+            <span class="tag">Kezdőpont</span>
+            <h3 class="domain">rebuilttheworld.org</h3>
+            <p>A nyilvános kapu: orientáció, küldetés, rendszerkép, archív logika, első belépési utak.</p>
+          </article>
+          <article class="domain-card">
+            <span class="tag">Felfedezési réteg</span>
+            <h3 class="domain">rebuilttheworld.com</h3>
+            <p>Jelek, puzzle-energia, mélyebb felfedezés, rétegzett belépés és működési kísérletek.</p>
+          </article>
+          <article class="domain-card">
+            <span class="tag">Funkcionális kapu</span>
+            <h3 class="domain">bittium1.com</h3>
+            <p>Programok, eszközök, gyakorlati belépési pontok, technikai kiszolgálás és speciális felületek.</p>
+          </article>
+          <article class="domain-card">
+            <span class="tag">Örökségi logika</span>
+            <h3>Kapcsolat, nem keveredés</h3>
+            <p>A felületek összefüggnek, de nem mosódnak össze. A felhasználó fokozatosan mélyülhet a rendszerben.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="entry">
+      <div class="container">
+        <div class="section-head">
+          <div class="kicker">Belépési utak</div>
+          <h2>Nem mindenki ugyanazon az ajtón érkezik</h2>
+          <div class="subtext">
+            A nyitóoldal láthatóvá teszi, hogy a rendszer különböző embereknek különböző utakat kínál.
+          </div>
+        </div>
+
+        <div class="entry-grid">
+          <article class="entry-card">
+            <span class="tag">Belépés 01</span>
+            <h3>Építőknek</h3>
+            <p>Azoknak, akik létrehozni, tesztelni, dokumentálni és továbbadni akarnak.</p>
+          </article>
+          <article class="entry-card">
+            <span class="tag">Belépés 02</span>
+            <h3>Gondolkodóknak</h3>
+            <p>Akiket rendszerek, jelentés, architektúra, értelmezés és hosszú távú kérdések vonzanak.</p>
+          </article>
+          <article class="entry-card">
+            <span class="tag">Belépés 03</span>
+            <h3>Jövőbeli olvasóknak</h3>
+            <p>Akik később érkeznek, és tiszta kontextusra, nyomokra és olvasható örökségre van szükségük.</p>
+          </article>
+          <article class="entry-card">
+            <span class="tag">Belépés 04</span>
+            <h3>Az észrevétleneknek</h3>
+            <p>Akiknek az értéke, hangja vagy potenciálja a hagyományos rendszerekben túl könnyen elvész.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="memory">
+      <div class="container">
+        <div class="section-head">
+          <div class="kicker">Múlt és örökség</div>
+          <h2>Modern felület, megőrzött mélység</h2>
+          <div class="subtext">
+            A design tudatosan ötvözi a jelen letisztultságát a dokumentum, az archívum és az emlékezet karakterével.
+          </div>
+        </div>
+
+        <div class="memory-grid">
+          <article class="memory-card">
+            <span class="tag">Örökségi gesztus</span>
+            <h3>Dokumentum-szerű ritmus</h3>
+            <p>A nagy margók, a tipográfiai hierarchia és a nyugodt blokkok azt sugallják, hogy ez nem gyors fogyasztásra készült felület.</p>
+          </article>
+          <article class="memory-card">
+            <span class="tag">Kortárs eszköz</span>
+            <h3>Rétegzett digitális intézmény</h3>
+            <p>A sötét felületek, a finom fények és a strukturált kártyák modern jelenlétet adnak anélkül, hogy trendi zajjá válnának.</p>
+          </article>
+        </div>
+
+        <div class="card" style="margin-top:1rem">
+          <h3>Ajánlott első telepítési fókusz</h3>
+          <div class="timeline">
+            <div class="t-item"><strong>Hero</strong> - tiszta első benyomás, rövid küldetés, 2-3 CTA.</div>
+            <div class="t-item"><strong>Mi ez?</strong> - tömör magyarázat a rendszer természetéről.</div>
+            <div class="t-item"><strong>Rétegek</strong> - public / LAB / archive / proof logika.</div>
+            <div class="t-item"><strong>Küldetés</strong> - a méltóság és a sérülékenyek védelmének látható megjelenése.</div>
+            <div class="t-item"><strong>Domain térkép</strong> - .org / .com / bittium1.com szerepkörök.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <div class="brand-title">Rebuilt The World</div>
+        <p class="small">
+          Egy olyan kezdőfelület, amely már az első oldalon megmutatja:
+          az érték nem csak létrejön, hanem meg is őrizhető, tovább is adható.
+        </p>
+      </div>
+      <div class="small">
+        <div><strong>Fájl típusa:</strong> statikus, egyfájlos HTML</div>
+        <div><strong>Ajánlott név:</strong> <code>index.html</code></div>
+        <div><strong>Használat:</strong> GitHub repo / Cloudflare Pages / közvetlen feltöltés</div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

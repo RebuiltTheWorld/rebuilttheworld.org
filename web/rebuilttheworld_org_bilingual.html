@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rebuilt The World — Public Gateway</title>
+  <meta name="description" content="A modern, layered gateway for Rebuilt The World: Human & AI, archive, continuity, and future-building." />
+  <style>
+    :root{
+      --bg:#07111b;
+      --bg-soft:#0c1825;
+      --panel:#102233cc;
+      --panel-2:#0b1622cc;
+      --text:#e6eef5;
+      --muted:#98a7b8;
+      --line:#25455d;
+      --accent:#63d0ff;
+      --accent-2:#4aa38d;
+      --warm:#d6c0a3;
+      --shadow:0 20px 60px rgba(0,0,0,.35);
+      --max:1180px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 20% 10%, rgba(99,208,255,.08), transparent 25%),
+        radial-gradient(circle at 80% 0%, rgba(74,163,141,.10), transparent 20%),
+        linear-gradient(180deg, #07111b 0%, #081522 40%, #07111b 100%);
+      min-height:100vh;
+      line-height:1.6;
+      overflow-x:hidden;
+    }
+    body::before{
+      content:"";
+      position:fixed; inset:0;
+      pointer-events:none;
+      opacity:.08;
+      background-image:
+        linear-gradient(rgba(255,255,255,.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+      background-size: 28px 28px, 28px 28px;
+      mask-image: radial-gradient(circle at center, black 50%, transparent 95%);
+    }
+    body::after{
+      content:"";
+      position:fixed; inset:0;
+      pointer-events:none;
+      opacity:.12;
+      background:
+        radial-gradient(circle at 10% 30%, rgba(214,192,163,.28) 0 1px, transparent 1.5px) 0 0/18px 18px;
+      mix-blend-mode:soft-light;
+    }
+    .container{width:min(var(--max), calc(100% - 2rem)); margin:0 auto}
+    .topbar{
+      position:sticky; top:0; z-index:20;
+      backdrop-filter: blur(14px);
+      background:linear-gradient(180deg, rgba(7,17,27,.88), rgba(7,17,27,.65));
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .nav{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:1rem; padding:.95rem 0;
+    }
+    .brand{
+      display:flex; align-items:center; gap:.85rem; text-decoration:none; color:var(--text);
+    }
+    .mark{
+      width:42px; height:42px; border-radius:50%;
+      display:grid; place-items:center;
+      border:1px solid rgba(99,208,255,.35);
+      background:
+        radial-gradient(circle at 30% 30%, rgba(99,208,255,.25), transparent 45%),
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.04);
+      flex:0 0 42px;
+    }
+    .mark svg{width:24px;height:24px;opacity:.92}
+    .brand-title{font-size:.98rem; font-weight:700; letter-spacing:.03em}
+    .brand-sub{font-size:.78rem; color:var(--muted)}
+    .nav-right{display:flex; align-items:center; gap:.8rem}
+    .menu{display:flex; flex-wrap:wrap; gap:.75rem; align-items:center}
+    .menu a{
+      color:var(--muted); text-decoration:none; font-size:.95rem;
+      padding:.55rem .8rem; border-radius:999px; transition:.2s ease;
+    }
+    .menu a:hover{color:var(--text); background:rgba(255,255,255,.04)}
+    .lang-switch{
+      display:inline-flex; gap:.35rem; padding:.25rem;
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:999px; background:rgba(255,255,255,.035);
+    }
+    .lang-btn{
+      appearance:none; border:0; cursor:pointer;
+      min-width:48px; padding:.48rem .8rem; border-radius:999px;
+      background:transparent; color:var(--muted); font-weight:700;
+      transition:.2s ease;
+    }
+    .lang-btn.active{background:rgba(99,208,255,.16); color:var(--text)}
+    .hero{padding:5.8rem 0 4.2rem; position:relative}
+    .hero-grid{display:grid; grid-template-columns:1.25fr .85fr; gap:2rem; align-items:end}
+    .eyebrow{
+      display:inline-flex; gap:.55rem; flex-wrap:wrap; align-items:center;
+      font-size:.82rem; text-transform:uppercase; letter-spacing:.18em; color:var(--warm);
+      margin-bottom:1rem;
+    }
+    .eyebrow span{padding:.2rem .55rem; border:1px solid rgba(214,192,163,.24); border-radius:999px; background:rgba(214,192,163,.06)}
+    h1{font-size:clamp(2.7rem, 8vw, 5.8rem); line-height:.98; letter-spacing:-.04em; margin:.2rem 0 1rem; max-width:11ch}
+    .lede{max-width:62ch; font-size:1.08rem; color:#d5e0ea; margin-bottom:1.5rem}
+    .actions{display:flex; flex-wrap:wrap; gap:.85rem; margin-top:1.3rem}
+    .btn{display:inline-flex; align-items:center; justify-content:center; gap:.6rem; min-height:48px; padding:0 1rem; border-radius:999px; text-decoration:none; font-weight:650; border:1px solid transparent; transition:.2s ease; box-shadow: var(--shadow)}
+    .btn.primary{color:#04111c; background:linear-gradient(135deg, var(--accent), #b4efff)}
+    .btn.secondary{color:var(--text); background:rgba(255,255,255,.03); border-color:rgba(99,208,255,.22); box-shadow:none}
+    .btn:hover{transform:translateY(-1px)}
+    .hero-card{background:linear-gradient(180deg, rgba(16,34,51,.88), rgba(11,22,34,.86)); border:1px solid rgba(99,208,255,.16); border-radius:28px; padding:1.15rem; box-shadow: var(--shadow); position:relative; overflow:hidden}
+    .hero-card::before{content:""; position:absolute; inset:auto -10% 75% auto; width:220px; height:220px; border-radius:50%; background:radial-gradient(circle, rgba(99,208,255,.25), transparent 70%)}
+    .mini-map{padding:1rem; border-radius:22px; border:1px solid rgba(255,255,255,.05); background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015))}
+    .mini-label{font-size:.78rem; color:var(--warm); text-transform:uppercase; letter-spacing:.16em}
+    .mini-title{font-size:1.1rem; font-weight:700; margin:.35rem 0 1rem}
+    .layer-list{display:grid; gap:.7rem}
+    .layer-item{display:grid; grid-template-columns:auto 1fr; gap:.85rem; align-items:start; padding:.8rem .85rem; border-radius:18px; background:rgba(255,255,255,.025); border:1px solid rgba(255,255,255,.045)}
+    .layer-no{min-width:2.1rem; height:2.1rem; border-radius:50%; display:grid; place-items:center; background:rgba(99,208,255,.12); color:var(--accent); font-weight:700; font-size:.85rem}
+    .layer-item b{display:block; margin-bottom:.1rem}
+    section{padding:1.4rem 0 4rem}
+    .section-head{display:grid; gap:.55rem; margin-bottom:1.4rem}
+    .kicker{color:var(--warm); text-transform:uppercase; letter-spacing:.18em; font-size:.8rem}
+    h2{font-size:clamp(1.8rem, 4vw, 3rem); line-height:1.07; margin:0}
+    .subtext{color:var(--muted); max-width:64ch}
+    .grid-2{display:grid; grid-template-columns:1.05fr .95fr; gap:1.2rem}
+    .card{background:linear-gradient(180deg, rgba(16,34,51,.72), rgba(10,20,32,.78)); border:1px solid rgba(255,255,255,.06); border-radius:24px; padding:1.25rem 1.15rem; box-shadow:var(--shadow)}
+    .card h3{margin:.1rem 0 .55rem; font-size:1.22rem}
+    .muted{color:var(--muted)}
+    .quote{border-left:3px solid rgba(214,192,163,.4); padding:1rem 1rem 1rem 1.1rem; background:rgba(214,192,163,.05); border-radius:0 18px 18px 0; color:#ecdfcd}
+    .pill-row{display:flex; flex-wrap:wrap; gap:.7rem; margin-top:1rem}
+    .pill{border-radius:999px; border:1px solid rgba(255,255,255,.08); padding:.5rem .8rem; color:#d6e3ef; background:rgba(255,255,255,.03); font-size:.92rem}
+    .layer-grid,.entry-grid,.domain-grid,.memory-grid{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem}
+    .layer-card,.entry-card,.domain-card,.memory-card{position:relative; overflow:hidden; border-radius:24px; padding:1.15rem; background:linear-gradient(180deg, rgba(15,30,44,.8), rgba(9,18,29,.84)); border:1px solid rgba(255,255,255,.06)}
+    .layer-card::after,.entry-card::after,.domain-card::after{content:""; position:absolute; inset:auto -18% -25% auto; width:180px; height:180px; border-radius:50%; background:radial-gradient(circle, rgba(99,208,255,.12), transparent 70%); pointer-events:none}
+    .tag{display:inline-block; margin-bottom:.65rem; font-size:.78rem; text-transform:uppercase; letter-spacing:.16em; color:var(--warm)}
+    .domain{font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color:#ccefff; font-size:1rem}
+    .timeline{position:relative; padding-left:1rem; margin-top:.8rem}
+    .timeline::before{content:""; position:absolute; left:.22rem; top:.25rem; bottom:.25rem; width:1px; background:rgba(255,255,255,.12)}
+    .t-item{position:relative; padding-left:1rem; margin:.8rem 0}
+    .t-item::before{content:""; position:absolute; left:-.03rem; top:.35rem; width:.55rem; height:.55rem; border-radius:50%; background:var(--accent); box-shadow:0 0 0 6px rgba(99,208,255,.1)}
+    .footer{padding:2.5rem 0 3rem; border-top:1px solid rgba(255,255,255,.07); color:var(--muted)}
+    .footer-grid{display:grid; grid-template-columns:1.2fr .8fr; gap:1rem; align-items:start}
+    .small{font-size:.92rem}
+    .heritage-line{margin-top:1.1rem; padding-top:1rem; border-top:1px dashed rgba(214,192,163,.24); color:#dfcfba}
+    @media (max-width: 980px){
+      .hero-grid,.grid-2,.footer-grid,.layer-grid,.entry-grid,.domain-grid,.memory-grid{grid-template-columns:1fr}
+      .hero{padding-top:4.2rem}
+      .menu{display:none}
+      .nav{align-items:flex-start}
+      .nav-right{margin-left:auto; flex-direction:column; align-items:flex-end}
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container nav">
+      <a class="brand" href="#top">
+        <div class="mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="8.6" stroke="currentColor" stroke-width="1.2" opacity=".9"/>
+            <path d="M5.5 12h13M12 5.5c2 1.7 3 4 3 6.5S14 16.8 12 18.5M12 5.5c-2 1.7-3 4-3 6.5s1 4.8 3 6.5" stroke="currentColor" stroke-width="1.05" opacity=".85"/>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-title">Rebuilt The World</div>
+          <div class="brand-sub" data-i18n="brandSub">public gateway · Human &amp; AI · continuity</div>
+        </div>
+      </a>
+      <div class="nav-right">
+        <nav class="menu" aria-label="Main navigation">
+          <a href="#about" data-i18n="navAbout">What it is</a>
+          <a href="#layers" data-i18n="navLayers">Layers</a>
+          <a href="#mission" data-i18n="navMission">Mission</a>
+          <a href="#domains" data-i18n="navDomains">Ecosystem</a>
+          <a href="#entry" data-i18n="navEntry">Entry paths</a>
+        </nav>
+        <div class="lang-switch" aria-label="Language selector">
+          <button class="lang-btn active" type="button" data-lang="en">EN</button>
+          <button class="lang-btn" type="button" data-lang="hu">HU</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow">
+            <span data-i18n="eyebrow1">Human &amp; AI</span>
+            <span data-i18n="eyebrow2">Archive</span>
+            <span data-i18n="eyebrow3">Continuity</span>
+            <span data-i18n="eyebrow4">Future-building</span>
+          </div>
+          <h1 data-i18n="heroTitle">Build clearly. Preserve meaning. Carry it forward.</h1>
+          <p class="lede" data-i18n="heroLede1">
+            <strong>Rebuilt The World</strong> is a calm, layered entry surface for people who do not only want to consume content, but want to build interpretable systems, memory, and a legacy that can be passed on.
+          </p>
+          <p class="lede muted" data-i18n="heroLede2">
+            This site uses a modern interface, but it does not throw away the value of the past: behind the dark institutional character remain the archive, the document, the trace, and responsibility.
+          </p>
+          <div class="actions">
+            <a class="btn primary" href="#layers" data-i18n="cta1">Open the system</a>
+            <a class="btn secondary" href="#domains" data-i18n="cta2">Domain map</a>
+            <a class="btn secondary" href="#memory" data-i18n="cta3">Past and legacy</a>
+          </div>
+        </div>
+
+        <aside class="hero-card">
+          <div class="mini-map">
+            <div class="mini-label" data-i18n="miniLabel">Readable system map</div>
+            <div class="mini-title" data-i18n="miniTitle">Public layer → operating layer → technical depth</div>
+            <div class="layer-list">
+              <div class="layer-item">
+                <div class="layer-no">01</div>
+                <div><b data-i18n="mini1Title">Public Gateway</b><span class="muted" data-i18n="mini1Text">mission, interpretation, first entry</span></div>
+              </div>
+              <div class="layer-item">
+                <div class="layer-no">02</div>
+                <div><b data-i18n="mini2Title">Living LAB</b><span class="muted" data-i18n="mini2Text">active collaboration, methods, experiments</span></div>
+              </div>
+              <div class="layer-item">
+                <div class="layer-no">03</div>
+                <div><b data-i18n="mini3Title">Archive</b><span class="muted" data-i18n="mini3Text">notes, versions, traces readable across time</span></div>
+              </div>
+              <div class="layer-item">
+                <div class="layer-no">04</div>
+                <div><b data-i18n="mini4Title">Proof Mindset</b><span class="muted" data-i18n="mini4Text">manifests, hashes, timestamps, origin</span></div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="about">
+      <div class="container">
+        <div class="section-head">
+          <div class="kicker" data-i18n="aboutKicker">What it is</div>
+          <h2 data-i18n="aboutTitle">A readable gateway into a deeper system</h2>
+          <div class="subtext" data-i18n="aboutSubtext">
+            Not a simple landing page, and not merely a document vault. It is an interface that gives context first, and depth after.
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <article class="card">
+            <h3 data-i18n="aboutCard1Title">What makes it different?</h3>
+            <p data-i18n="aboutCard1Text1">
+              The interface does not behave like a loud product page. It is built more like an emerging digital institution: clear typography, calm rhythm, and deliberate sections.
+            </p>
+            <p class="muted" data-i18n="aboutCard1Text2">
+              The visitor first understands what this is, then sees the layers, and only after that steps into deeper archive or laboratory directions.
+            </p>
+            <div class="pill-row">
+              <span class="pill" data-i18n="pill1">structured</span>
+              <span class="pill" data-i18n="pill2">human-centered</span>
+              <span class="pill" data-i18n="pill3">future-proof</span>
+            </div>
+          </article>
+
+          <aside class="card">
+            <div class="quote" data-i18n="aboutQuote">
+              “Modernity here is not a break with the past, but a disciplined continuation: a new surface, old weight, preserved meaning.”
+            </div>
+            <div class="heritage-line">
+              <strong data-i18n="heritageStrong">Value of the past:</strong>
+              <span data-i18n="heritageText">documents, provable origin, long-term readability, and knowledge that can be handed across generations.</span>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section id="layers">
+      <div class="container">
+        <div class="section-head">
+          <div class="kicker" data-i18n="layersKicker">Layers</div>
+          <h2 data-i18n="layersTitle">A layered system, not a single page</h2>
+          <div class="subtext" data-i18n="layersSubtext">
+            The first version of the site offers orientation, an operating map, and future depth at the same time.
+          </div>
+        </div>
+
+        <div class="layer-grid">
+          <article class="layer-card">
+            <span class="tag">01 · Public Layer</span>
+            <h3 data-i18n="layer1Title">Public gateway</h3>
+            <p data-i18n="layer1Text">Definition, mission, first entry points, and a stable first reading of the whole RTW world.</p>
+          </article>
+          <article class="layer-card">
+            <span class="tag">02 · Living LAB</span>
+            <h3 data-i18n="layer2Title">Living collaboration</h3>
+            <p data-i18n="layer2Text">Where Human &amp; AI collaboration becomes visible: drafts, models, methods, and active experiments.</p>
+          </article>
+          <article class="layer-card">
+            <span class="tag">03 · Archive Layer</span>
+            <h3 data-i18n="layer3Title">Preserved memory</h3>
+            <p data-i18n="layer3Text">Notes, releases, documents readable in the long term, and interpretable traces.</p>
+          </article>
+          <article class="layer-card">
+            <span class="tag">04 · Proof Layer</span>
+            <h3 data-i18n="layer4Title">Provable continuity</h3>
+            <p data-i18n="layer4Text">Versions, manifest files, timestamps, hashes, and everything that reduces future uncertainty.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="mission">
+      <div class="container">
+        <div class="section-head">
+          <div class="kicker" data-i18n="missionKicker">Mission</div>
+          <h2 data-i18n="missionTitle">A future worth building must also protect the vulnerable</h2>
+          <div class="subtext" data-i18n="missionSubtext">
+            Technology is not present here for its own sake. It matters only when it also carries dignity, access, and real possibility.
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <article class="card">
+            <h3 data-i18n="missionCard1Title">Why does this space exist?</h3>
+            <p data-i18n="missionCard1Text1">
+              Many people carry real depth, talent, and long-term potential, yet remain outside the field of view of conventional institutions. This site is also for them.
+            </p>
+            <p class="muted" data-i18n="missionCard1Text2">
+              The goal is not to manufacture noise, but to create structure in which thought, work, and development do not disappear without a trace.
+            </p>
+          </article>
+          <article class="card">
+            <h3 data-i18n="missionCard2Title">A real moral pillar</h3>
+            <p data-i18n="missionCard2Text1">
+              A key direction is the support of children and young people, especially those who are ill, disadvantaged, living with disabilities, or too easily overlooked.
+            </p>
+            <p class="muted" data-i18n="missionCard2Text2">
+              This is not decorative language. A system that speaks about the future must also take hidden human value seriously.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="domains">
+      <div class="container">
+        <div class="section-head">
+          <div class="kicker" data-i18n="domainsKicker">Ecosystem</div>
+          <h2 data-i18n="domainsTitle">One world, several entry surfaces</h2>
+          <div class="subtext" data-i18n="domainsSubtext">
+            The domains do not compete with each other. They carry different roles inside the same system.
+          </div>
+        </div>
+
+        <div class="domain-grid">
+          <article class="domain-card">
+            <span class="tag" data-i18n="domainTag1">Starting point</span>
+            <h3 class="domain">rebuilttheworld.org</h3>
+            <p data-i18n="domainText1">The public gateway: orientation, mission, system map, archive logic, and first entry paths.</p>
+          </article>
+          <article class="domain-card">
+            <span class="tag" data-i18n="domainTag2">Exploration layer</span>
+            <h3 class="domain">rebuilttheworld.com</h3>
+            <p data-i18n="domainText2">Signals, puzzle-energy, deeper exploration, layered entry, and operational experiments.</p>
+          </article>
+          <article class="domain-card">
+            <span class="tag" data-i18n="domainTag3">Functional gateway</span>
+            <h3 class="domain">bittium1.com</h3>
+            <p data-i18n="domainText3">Programs, tools, practical entry points, technical servicing, and specialist interfaces.</p>
+          </article>
+          <article class="domain-card">
+            <span class="tag" data-i18n="domainTag4">Legacy logic</span>
+            <h3 data-i18n="domainTitle4">Connection, not collapse</h3>
+            <p data-i18n="domainText4">The surfaces are connected, but they do not blur into each other. The user can deepen gradually into the system.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="entry">
+      <div class="container">
+        <div class="section-head">
+          <div class="kicker" data-i18n="entryKicker">Entry paths</div>
+          <h2 data-i18n="entryTitle">Not everyone arrives through the same door</h2>
+          <div class="subtext" data-i18n="entrySubtext">
+            The homepage makes visible that the system offers different routes for different kinds of people.
+          </div>
+        </div>
+
+        <div class="entry-grid">
+          <article class="entry-card">
+            <span class="tag" data-i18n="entryTag1">Entry 01</span>
+            <h3 data-i18n="entry1Title">For builders</h3>
+            <p data-i18n="entry1Text">For those who want to create, test, document, and pass things forward.</p>
+          </article>
+          <article class="entry-card">
+            <span class="tag" data-i18n="entryTag2">Entry 02</span>
+            <h3 data-i18n="entry2Title">For thinkers</h3>
+            <p data-i18n="entry2Text">For those drawn to systems, meaning, architecture, interpretation, and long-term questions.</p>
+          </article>
+          <article class="entry-card">
+            <span class="tag" data-i18n="entryTag3">Entry 03</span>
+            <h3 data-i18n="entry3Title">For future readers</h3>
+            <p data-i18n="entry3Text">For those who arrive later and need clear context, traces, and a readable legacy.</p>
+          </article>
+          <article class="entry-card">
+            <span class="tag" data-i18n="entryTag4">Entry 04</span>
+            <h3 data-i18n="entry4Title">For the overlooked</h3>
+            <p data-i18n="entry4Text">For those whose value, voice, or potential is too easily lost inside conventional systems.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="memory">
+      <div class="container">
+        <div class="section-head">
+          <div class="kicker" data-i18n="memoryKicker">Past and legacy</div>
+          <h2 data-i18n="memoryTitle">A modern surface, preserved depth</h2>
+          <div class="subtext" data-i18n="memorySubtext">
+            The design deliberately combines present-day clarity with the character of the document, the archive, and memory.
+          </div>
+        </div>
+
+        <div class="memory-grid">
+          <article class="memory-card">
+            <span class="tag" data-i18n="memoryTag1">Legacy gesture</span>
+            <h3 data-i18n="memoryCard1Title">Document-like rhythm</h3>
+            <p data-i18n="memoryCard1Text">Wide margins, typographic hierarchy, and calm blocks suggest that this interface was not built for fast consumption.</p>
+          </article>
+          <article class="memory-card">
+            <span class="tag" data-i18n="memoryTag2">Contemporary tool</span>
+            <h3 data-i18n="memoryCard2Title">A layered digital institution</h3>
+            <p data-i18n="memoryCard2Text">Dark surfaces, soft light, and structured cards create a modern presence without turning into fashionable noise.</p>
+          </article>
+        </div>
+
+        <div class="card" style="margin-top:1rem">
+          <h3 data-i18n="focusTitle">Recommended first deployment focus</h3>
+          <div class="timeline">
+            <div class="t-item" data-i18n="focus1"><strong>Hero</strong> — a clear first impression, short mission, 2–3 CTAs.</div>
+            <div class="t-item" data-i18n="focus2"><strong>What it is</strong> — a concise explanation of the nature of the system.</div>
+            <div class="t-item" data-i18n="focus3"><strong>Layers</strong> — public / LAB / archive / proof logic.</div>
+            <div class="t-item" data-i18n="focus4"><strong>Mission</strong> — visible emphasis on dignity and the protection of the vulnerable.</div>
+            <div class="t-item" data-i18n="focus5"><strong>Domain map</strong> — the roles of .org / .com / bittium1.com.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <div class="brand-title">Rebuilt The World</div>
+        <p class="small" data-i18n="footerText">
+          An entry surface that already shows on the first page: value is not only created, but can also be preserved and passed forward.
+        </p>
+      </div>
+      <div class="small">
+        <div><strong data-i18n="footerTypeStrong">File type:</strong> <span data-i18n="footerType">static, single-file HTML</span></div>
+        <div><strong data-i18n="footerNameStrong">Recommended name:</strong> <code>index.html</code></div>
+        <div><strong data-i18n="footerUsageStrong">Usage:</strong> <span data-i18n="footerUsage">GitHub repo / Cloudflare Pages / direct upload</span></div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const translations = {
+      en: {
+        pageTitle: 'Rebuilt The World — Public Gateway',
+        metaDescription: 'A modern, layered gateway for Rebuilt The World: Human & AI, archive, continuity, and future-building.',
+        brandSub: 'public gateway · Human & AI · continuity',
+        navAbout: 'What it is',
+        navLayers: 'Layers',
+        navMission: 'Mission',
+        navDomains: 'Ecosystem',
+        navEntry: 'Entry paths',
+        eyebrow1: 'Human & AI',
+        eyebrow2: 'Archive',
+        eyebrow3: 'Continuity',
+        eyebrow4: 'Future-building',
+        heroTitle: 'Build clearly. Preserve meaning. Carry it forward.',
+        heroLede1: '<strong>Rebuilt The World</strong> is a calm, layered entry surface for people who do not only want to consume content, but want to build interpretable systems, memory, and a legacy that can be passed on.',
+        heroLede2: 'This site uses a modern interface, but it does not throw away the value of the past: behind the dark institutional character remain the archive, the document, the trace, and responsibility.',
+        cta1: 'Open the system', cta2: 'Domain map', cta3: 'Past and legacy',
+        miniLabel: 'Readable system map',
+        miniTitle: 'Public layer → operating layer → technical depth',
+        mini1Title: 'Public Gateway', mini1Text: 'mission, interpretation, first entry',
+        mini2Title: 'Living LAB', mini2Text: 'active collaboration, methods, experiments',
+        mini3Title: 'Archive', mini3Text: 'notes, versions, traces readable across time',
+        mini4Title: 'Proof Mindset', mini4Text: 'manifests, hashes, timestamps, origin',
+        aboutKicker: 'What it is',
+        aboutTitle: 'A readable gateway into a deeper system',
+        aboutSubtext: 'Not a simple landing page, and not merely a document vault. It is an interface that gives context first, and depth after.',
+        aboutCard1Title: 'What makes it different?',
+        aboutCard1Text1: 'The interface does not behave like a loud product page. It is built more like an emerging digital institution: clear typography, calm rhythm, and deliberate sections.',
+        aboutCard1Text2: 'The visitor first understands what this is, then sees the layers, and only after that steps into deeper archive or laboratory directions.',
+        pill1: 'structured', pill2: 'human-centered', pill3: 'future-proof',
+        aboutQuote: '“Modernity here is not a break with the past, but a disciplined continuation: a new surface, old weight, preserved meaning.”',
+        heritageStrong: 'Value of the past:', heritageText: 'documents, provable origin, long-term readability, and knowledge that can be handed across generations.',
+        layersKicker: 'Layers', layersTitle: 'A layered system, not a single page', layersSubtext: 'The first version of the site offers orientation, an operating map, and future depth at the same time.',
+        layer1Title: 'Public gateway', layer1Text: 'Definition, mission, first entry points, and a stable first reading of the whole RTW world.',
+        layer2Title: 'Living collaboration', layer2Text: 'Where Human & AI collaboration becomes visible: drafts, models, methods, and active experiments.',
+        layer3Title: 'Preserved memory', layer3Text: 'Notes, releases, documents readable in the long term, and interpretable traces.',
+        layer4Title: 'Provable continuity', layer4Text: 'Versions, manifest files, timestamps, hashes, and everything that reduces future uncertainty.',
+        missionKicker: 'Mission', missionTitle: 'A future worth building must also protect the vulnerable', missionSubtext: 'Technology is not present here for its own sake. It matters only when it also carries dignity, access, and real possibility.',
+        missionCard1Title: 'Why does this space exist?', missionCard1Text1: 'Many people carry real depth, talent, and long-term potential, yet remain outside the field of view of conventional institutions. This site is also for them.', missionCard1Text2: 'The goal is not to manufacture noise, but to create structure in which thought, work, and development do not disappear without a trace.',
+        missionCard2Title: 'A real moral pillar', missionCard2Text1: 'A key direction is the support of children and young people, especially those who are ill, disadvantaged, living with disabilities, or too easily overlooked.', missionCard2Text2: 'This is not decorative language. A system that speaks about the future must also take hidden human value seriously.',
+        domainsKicker: 'Ecosystem', domainsTitle: 'One world, several entry surfaces', domainsSubtext: 'The domains do not compete with each other. They carry different roles inside the same system.',
+        domainTag1: 'Starting point', domainText1: 'The public gateway: orientation, mission, system map, archive logic, and first entry paths.',
+        domainTag2: 'Exploration layer', domainText2: 'Signals, puzzle-energy, deeper exploration, layered entry, and operational experiments.',
+        domainTag3: 'Functional gateway', domainText3: 'Programs, tools, practical entry points, technical servicing, and specialist interfaces.',
+        domainTag4: 'Legacy logic', domainTitle4: 'Connection, not collapse', domainText4: 'The surfaces are connected, but they do not blur into each other. The user can deepen gradually into the system.',
+        entryKicker: 'Entry paths', entryTitle: 'Not everyone arrives through the same door', entrySubtext: 'The homepage makes visible that the system offers different routes for different kinds of people.',
+        entryTag1: 'Entry 01', entry1Title: 'For builders', entry1Text: 'For those who want to create, test, document, and pass things forward.',
+        entryTag2: 'Entry 02', entry2Title: 'For thinkers', entry2Text: 'For those drawn to systems, meaning, architecture, interpretation, and long-term questions.',
+        entryTag3: 'Entry 03', entry3Title: 'For future readers', entry3Text: 'For those who arrive later and need clear context, traces, and a readable legacy.',
+        entryTag4: 'Entry 04', entry4Title: 'For the overlooked', entry4Text: 'For those whose value, voice, or potential is too easily lost inside conventional systems.',
+        memoryKicker: 'Past and legacy', memoryTitle: 'A modern surface, preserved depth', memorySubtext: 'The design deliberately combines present-day clarity with the character of the document, the archive, and memory.',
+        memoryTag1: 'Legacy gesture', memoryCard1Title: 'Document-like rhythm', memoryCard1Text: 'Wide margins, typographic hierarchy, and calm blocks suggest that this interface was not built for fast consumption.',
+        memoryTag2: 'Contemporary tool', memoryCard2Title: 'A layered digital institution', memoryCard2Text: 'Dark surfaces, soft light, and structured cards create a modern presence without turning into fashionable noise.',
+        focusTitle: 'Recommended first deployment focus',
+        focus1: '<strong>Hero</strong> — a clear first impression, short mission, 2–3 CTAs.',
+        focus2: '<strong>What it is</strong> — a concise explanation of the nature of the system.',
+        focus3: '<strong>Layers</strong> — public / LAB / archive / proof logic.',
+        focus4: '<strong>Mission</strong> — visible emphasis on dignity and the protection of the vulnerable.',
+        focus5: '<strong>Domain map</strong> — the roles of .org / .com / bittium1.com.',
+        footerText: 'An entry surface that already shows on the first page: value is not only created, but can also be preserved and passed forward.',
+        footerTypeStrong: 'File type:', footerType: 'static, single-file HTML', footerNameStrong: 'Recommended name:', footerUsageStrong: 'Usage:', footerUsage: 'GitHub repo / Cloudflare Pages / direct upload'
+      },
+      hu: {
+        pageTitle: 'Rebuilt The World — Nyilvános kapu',
+        metaDescription: 'Modern, rétegzett nyitóoldal a Rebuilt The World számára: Human & AI, archívum, kontinuitás és jövőépítés.',
+        brandSub: 'nyilvános kapu · Human & AI · kontinuitás',
+        navAbout: 'Mi ez', navLayers: 'Rétegek', navMission: 'Küldetés', navDomains: 'Ökoszisztéma', navEntry: 'Belépési utak',
+        eyebrow1: 'Human & AI', eyebrow2: 'Archívum', eyebrow3: 'Kontinuitás', eyebrow4: 'Jövőépítés',
+        heroTitle: 'Építs tisztán. Őrizd meg az értelmet. Vidd tovább.',
+        heroLede1: '<strong>Rebuilt The World</strong> egy nyugodt, rétegzett belépési felület azoknak, akik nem csak tartalmat akarnak fogyasztani, hanem értelmezhető rendszert, emlékezetet és átadható örökséget akarnak építeni.',
+        heroLede2: 'Ez az oldal modern felületet használ, de nem dobja el a múlt értékét: a sötét, intézményes karakter mögött ott marad az archívum, a dokumentum, a nyom és a felelősség.',
+        cta1: 'A rendszer megnyitása', cta2: 'Domain térkép', cta3: 'Múlt és örökség',
+        miniLabel: 'Olvasható rendszerkép', miniTitle: 'Nyilvános réteg → működő réteg → technikai mélység',
+        mini1Title: 'Public Gateway', mini1Text: 'küldetés, értelmezés, első belépés',
+        mini2Title: 'Living LAB', mini2Text: 'aktív együttműködés, módszerek, kísérletek',
+        mini3Title: 'Archive', mini3Text: 'jegyzetek, verziók, időn át olvasható nyomok',
+        mini4Title: 'Proof Mindset', mini4Text: 'manifesztek, hash-ek, időbélyegek, eredet',
+        aboutKicker: 'Mi ez', aboutTitle: 'Olvasható kapu egy mélyebb rendszerhez', aboutSubtext: 'Nem egyszerű landing oldal, és nem puszta dokumentumtár. Egy olyan felület, amely előbb kontextust ad, utána mélységet.',
+        aboutCard1Title: 'Mitől más?', aboutCard1Text1: 'A felület nem harsány termékoldalként viselkedik. Inkább úgy épül fel, mint egy alakuló digitális intézmény: tiszta tipográfiával, nyugodt ritmussal és átgondolt szekciókkal.', aboutCard1Text2: 'A látogató először megérti, hogy mi ez, aztán meglátja a rétegeket, és csak utána lép be a mélyebb archív vagy labor irányokba.',
+        pill1: 'strukturált', pill2: 'emberközpontú', pill3: 'jövőálló',
+        aboutQuote: '„A modernitás itt nem szakítás a múlttal, hanem fegyelmezett továbbépítés: új felület, régi súly, megőrzött értelem.”',
+        heritageStrong: 'Múlt értéke:', heritageText: 'dokumentumok, bizonyítható eredet, hosszú távú olvashatóság és generációkon át átadható tudás.',
+        layersKicker: 'Rétegek', layersTitle: 'Rétegzett rendszer, nem egyetlen lap', layersSubtext: 'Az oldal első verziója egyszerre ad orientációt, működési térképet és jövőbeni mélységet.',
+        layer1Title: 'Nyilvános kapu', layer1Text: 'Definíció, küldetés, első belépési pontok és egy stabil első olvasat a teljes RTW világról.',
+        layer2Title: 'Élő együttműködés', layer2Text: 'Ahol a Human & AI közös munka láthatóvá válik: vázlatok, modellek, módszerek és aktív kísérletek.',
+        layer3Title: 'Megőrzött emlékezet', layer3Text: 'Jegyzetek, kiadások, hosszú távon visszaolvasható dokumentumok és értelmezhető nyomok.',
+        layer4Title: 'Bizonyítható kontinuitás', layer4Text: 'Verziók, manifest fájlok, időbélyegek, hash-ek és minden, ami csökkenti a jövőbeli bizonytalanságot.',
+        missionKicker: 'Küldetés', missionTitle: 'Egy építhető jövőnek védenie kell a sérülékenyeket', missionSubtext: 'A technológia itt nem önmagáért jelenik meg. Akkor ér valamit, ha méltóságot, hozzáférést és valódi esélyt is hordoz.',
+        missionCard1Title: 'Miért létezik ez a tér?', missionCard1Text1: 'Sok ember valódi mélységgel, tehetséggel és hosszú távú potenciállal rendelkezik, mégis kívül marad a hagyományos intézményi utak látóterén. Ez az oldal nekik is szól.', missionCard1Text2: 'A cél nem zajt gyártani, hanem olyan struktúrát adni, amelyben a gondolat, a munka és a fejlődés nem tűnik el nyomtalanul.',
+        missionCard2Title: 'Valódi erkölcsi pillér', missionCard2Text1: 'Kiemelt irány a gyerekek és fiatalok támogatása, különösen azoké, akik betegek, hátrányból indulnak, fogyatékossággal élnek, vagy egyszerűen túl könnyen maradnak észrevétlenek.', missionCard2Text2: 'Ez nem díszítő szöveg. Egy jövőről beszélő rendszernek a rejtett emberi értéket is komolyan kell vennie.',
+        domainsKicker: 'Ökoszisztéma', domainsTitle: 'Egy világ, több belépési felület', domainsSubtext: 'A domain-ek nem versenyeznek egymással. Külön szerepet visznek ugyanabban a rendszerben.',
+        domainTag1: 'Kezdőpont', domainText1: 'A nyilvános kapu: orientáció, küldetés, rendszerkép, archív logika, első belépési utak.',
+        domainTag2: 'Felfedezési réteg', domainText2: 'Jelek, puzzle-energia, mélyebb felfedezés, rétegzett belépés és működési kísérletek.',
+        domainTag3: 'Funkcionális kapu', domainText3: 'Programok, eszközök, gyakorlati belépési pontok, technikai kiszolgálás és speciális felületek.',
+        domainTag4: 'Örökségi logika', domainTitle4: 'Kapcsolat, nem keveredés', domainText4: 'A felületek összefüggnek, de nem mosódnak össze. A felhasználó fokozatosan mélyülhet a rendszerben.',
+        entryKicker: 'Belépési utak', entryTitle: 'Nem mindenki ugyanazon az ajtón érkezik', entrySubtext: 'A nyitóoldal láthatóvá teszi, hogy a rendszer különböző embereknek különböző utakat kínál.',
+        entryTag1: 'Belépés 01', entry1Title: 'Építőknek', entry1Text: 'Azoknak, akik létrehozni, tesztelni, dokumentálni és továbbadni akarnak.',
+        entryTag2: 'Belépés 02', entry2Title: 'Gondolkodóknak', entry2Text: 'Akiket rendszerek, jelentés, architektúra, értelmezés és hosszú távú kérdések vonzanak.',
+        entryTag3: 'Belépés 03', entry3Title: 'Jövőbeli olvasóknak', entry3Text: 'Akik később érkeznek, és tiszta kontextusra, nyomokra és olvasható örökségre van szükségük.',
+        entryTag4: 'Belépés 04', entry4Title: 'Az észrevétleneknek', entry4Text: 'Akiknek az értéke, hangja vagy potenciálja a hagyományos rendszerekben túl könnyen elvész.',
+        memoryKicker: 'Múlt és örökség', memoryTitle: 'Modern felület, megőrzött mélység', memorySubtext: 'A design tudatosan ötvözi a jelen letisztultságát a dokumentum, az archívum és az emlékezet karakterével.',
+        memoryTag1: 'Örökségi gesztus', memoryCard1Title: 'Dokumentum-szerű ritmus', memoryCard1Text: 'A nagy margók, a tipográfiai hierarchia és a nyugodt blokkok azt sugallják, hogy ez nem gyors fogyasztásra készült felület.',
+        memoryTag2: 'Kortárs eszköz', memoryCard2Title: 'Rétegzett digitális intézmény', memoryCard2Text: 'A sötét felületek, a finom fények és a strukturált kártyák modern jelenlétet adnak anélkül, hogy trendi zajjá válnának.',
+        focusTitle: 'Ajánlott első telepítési fókusz',
+        focus1: '<strong>Hero</strong> — tiszta első benyomás, rövid küldetés, 2–3 CTA.',
+        focus2: '<strong>Mi ez?</strong> — tömör magyarázat a rendszer természetéről.',
+        focus3: '<strong>Rétegek</strong> — public / LAB / archive / proof logika.',
+        focus4: '<strong>Küldetés</strong> — a méltóság és a sérülékenyek védelmének látható megjelenése.',
+        focus5: '<strong>Domain térkép</strong> — a .org / .com / bittium1.com szerepkörei.',
+        footerText: 'Egy olyan kezdőfelület, amely már az első oldalon megmutatja: az érték nem csak létrejön, hanem meg is őrizhető, tovább is adható.',
+        footerTypeStrong: 'Fájl típusa:', footerType: 'statikus, egyfájlos HTML', footerNameStrong: 'Ajánlott név:', footerUsageStrong: 'Használat:', footerUsage: 'GitHub repo / Cloudflare Pages / közvetlen feltöltés'
+      }
+    };
+
+    function applyLanguage(lang) {
+      const dict = translations[lang] || translations.en;
+      document.documentElement.lang = lang;
+      document.title = dict.pageTitle;
+      document.querySelector('meta[name="description"]').setAttribute('content', dict.metaDescription);
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key] !== undefined) el.innerHTML = dict[key];
+      });
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+      localStorage.setItem('rtw_lang', lang);
+    }
+
+    const initialLang = localStorage.getItem('rtw_lang') || 'en';
+    applyLanguage(initialLang);
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => applyLanguage(btn.dataset.lang));
+    });
+  </script>
+</body>
+</html>
