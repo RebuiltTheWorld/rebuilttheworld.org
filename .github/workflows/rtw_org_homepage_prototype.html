@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rebuilt The World — Public Gateway</title>
+  <meta
+    name="description"
+    content="Rebuilt The World is a Human & AI gateway for building, preserving, and carrying forward what matters across time."
+  />
+  <style>
+    :root {
+      --bg: #071019;
+      --bg-soft: #0c1723;
+      --panel: rgba(12, 23, 35, 0.92);
+      --panel-strong: rgba(9, 18, 29, 0.98);
+      --text: #eef6ff;
+      --muted: #94a8bb;
+      --line: rgba(132, 154, 177, 0.18);
+      --accent: #61d9ff;
+      --accent-2: #56c7b6;
+      --accent-soft: rgba(97, 217, 255, 0.14);
+      --accent-soft-2: rgba(86, 199, 182, 0.12);
+      --shadow: 0 22px 70px rgba(0, 0, 0, 0.42);
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, monospace;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      line-height: 1.6;
+      background:
+        radial-gradient(circle at top left, rgba(86, 199, 182, 0.14), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(97, 217, 255, 0.12), transparent 30%),
+        linear-gradient(180deg, #071019 0%, #09121d 45%, #071019 100%);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .shell {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(14px);
+      background: rgba(7, 16, 25, 0.78);
+      border-bottom: 1px solid rgba(132, 154, 177, 0.08);
+    }
+
+    .nav-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 16px 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 52px;
+      height: 52px;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(132, 154, 177, 0.28);
+      background: #08121c;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.25), 0 0 30px rgba(86, 199, 182, 0.14);
+      flex-shrink: 0;
+    }
+
+    .brand-mark img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .brand-copy {
+      min-width: 0;
+    }
+
+    .brand-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 10px;
+      border: 1px solid rgba(132, 154, 177, 0.18);
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.02);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .brand-sub {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .top-nav {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .top-nav a {
+      color: var(--muted);
+      font-size: 13px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      transition: 180ms ease;
+    }
+
+    .top-nav a:hover {
+      color: var(--text);
+      border-color: rgba(132, 154, 177, 0.22);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .hero {
+      padding: 72px 0 28px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.9fr);
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .hero-main,
+    .hero-side,
+    .panel,
+    .domain-card,
+    .layer-card,
+    .entry-card,
+    .genesis-card,
+    .foot-card {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius-xl);
+    }
+
+    .hero-main {
+      padding: 30px;
+      background:
+        radial-gradient(circle at top left, rgba(97, 217, 255, 0.12), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(86, 199, 182, 0.12), transparent 36%),
+        var(--panel-strong);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(132, 154, 177, 0.16);
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .eyebrow-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 0 18px rgba(97, 217, 255, 0.5);
+    }
+
+    h1 {
+      margin: 0 0 16px;
+      font-size: clamp(34px, 6vw, 58px);
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+      max-width: 10.5ch;
+    }
+
+    .hero-lead {
+      margin: 0 0 18px;
+      color: #dce9f5;
+      font-size: 18px;
+      max-width: 62ch;
+    }
+
+    .hero-copy {
+      margin: 0 0 18px;
+      color: var(--muted);
+      max-width: 64ch;
+      font-size: 15px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 22px 0 16px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 600;
+      transition: 180ms ease;
+      border: 1px solid transparent;
+    }
+
+    .button-primary {
+      color: #04111a;
+      background: linear-gradient(135deg, var(--accent), #82e7ff);
+      box-shadow: 0 18px 38px rgba(97, 217, 255, 0.22);
+    }
+
+    .button-primary:hover { transform: translateY(-1px); }
+
+    .button-secondary {
+      color: var(--text);
+      border-color: rgba(132, 154, 177, 0.24);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .button-secondary:hover {
+      border-color: rgba(132, 154, 177, 0.34);
+      background: rgba(255,255,255,0.05);
+    }
+
+    .hero-note {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .note-pill {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(132, 154, 177, 0.16);
+      background: rgba(255,255,255,0.02);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .hero-side {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .side-title,
+    .section-label {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .side-list {
+      margin: 0;
+      padding-left: 18px;
+      color: #dce9f5;
+      font-size: 14px;
+    }
+
+    .side-list li + li { margin-top: 8px; }
+
+    .side-text {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .mono-box {
+      border-radius: var(--radius-md);
+      background: rgba(2, 9, 16, 0.7);
+      border: 1px solid rgba(132, 154, 177, 0.14);
+      padding: 14px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: #d8ebff;
+      line-height: 1.55;
+    }
+
+    section {
+      padding: 22px 0;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: clamp(24px, 4vw, 34px);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+    }
+
+    .section-intro {
+      margin: 8px 0 0;
+      color: var(--muted);
+      max-width: 72ch;
+      font-size: 15px;
+    }
+
+    .grid-2,
+    .grid-4 {
+      display: grid;
+      gap: 18px;
+    }
+
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+    .panel {
+      padding: 24px;
+      border-radius: var(--radius-lg);
+    }
+
+    .panel h3,
+    .domain-card h3,
+    .layer-card h3,
+    .entry-card h3,
+    .genesis-card h3,
+    .foot-card h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+      line-height: 1.15;
+    }
+
+    .panel p,
+    .domain-card p,
+    .layer-card p,
+    .entry-card p,
+    .genesis-card p,
+    .foot-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .domain-grid,
+    .layers-grid,
+    .entry-grid,
+    .genesis-grid,
+    .footer-grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .domain-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .layers-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .entry-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .genesis-grid { grid-template-columns: 1.2fr 0.8fr; }
+    .footer-grid { grid-template-columns: 1.15fr 0.85fr; }
+
+    .domain-card,
+    .layer-card,
+    .entry-card,
+    .genesis-card,
+    .foot-card {
+      padding: 22px;
+      border-radius: var(--radius-lg);
+      height: 100%;
+    }
+
+    .domain-tag,
+    .layer-tag,
+    .entry-tag,
+    .genesis-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(132, 154, 177, 0.14);
+    }
+
+    .domain-link {
+      display: inline-flex;
+      margin-top: 14px;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .callout {
+      padding: 20px 22px;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, rgba(97, 217, 255, 0.1), rgba(86, 199, 182, 0.08));
+      border: 1px solid rgba(97, 217, 255, 0.16);
+      box-shadow: var(--shadow);
+    }
+
+    .callout p {
+      margin: 0;
+      font-size: 15px;
+      color: #e5f1fb;
+    }
+
+    .genesis-card.primary {
+      background:
+        radial-gradient(circle at top right, rgba(97, 217, 255, 0.12), transparent 32%),
+        radial-gradient(circle at bottom left, rgba(86, 199, 182, 0.1), transparent 40%),
+        var(--panel-strong);
+    }
+
+    .quote {
+      margin: 16px 0 0;
+      padding-left: 16px;
+      border-left: 2px solid rgba(97, 217, 255, 0.32);
+      color: #cfe5f8;
+      font-style: italic;
+    }
+
+    .stack {
+      display: grid;
+      gap: 14px;
+    }
+
+    .footer {
+      padding: 26px 0 56px;
+    }
+
+    .footer-note {
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .tiny {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 1080px) {
+      .hero-grid,
+      .genesis-grid,
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .domain-grid,
+      .layers-grid,
+      .entry-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .nav-wrap {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .top-nav { justify-content: flex-start; }
+
+      .hero { padding-top: 42px; }
+
+      .hero-main,
+      .hero-side,
+      .panel,
+      .domain-card,
+      .layer-card,
+      .entry-card,
+      .genesis-card,
+      .foot-card {
+        padding: 20px;
+      }
+
+      .domain-grid,
+      .layers-grid,
+      .entry-grid,
+      .grid-2,
+      .grid-4 {
+        grid-template-columns: 1fr;
+      }
+
+      h1 { max-width: none; }
+
+      .hero-actions { flex-direction: column; align-items: stretch; }
+      .button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell nav-wrap">
+      <div class="brand">
+        <div class="brand-mark">
+          <img src="assets/logo/rebuilt-the-world-primary-dark.png" alt="Rebuilt The World logo" />
+        </div>
+        <div class="brand-copy">
+          <div class="brand-kicker">Public gateway · rebuilttheworld.org</div>
+          <p class="brand-title">Rebuilt The World</p>
+          <p class="brand-sub">Human &amp; AI · archive · continuity · future building</p>
+        </div>
+      </div>
+      <nav class="top-nav" aria-label="Primary navigation">
+        <a href="#about">About</a>
+        <a href="#layers">Layers</a>
+        <a href="#genesis">Genesis</a>
+        <a href="#mission">Mission</a>
+        <a href="#ecosystem">Ecosystem</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="shell hero-grid">
+        <div class="hero-main">
+          <div class="eyebrow">
+            <span class="eyebrow-dot"></span>
+            <span>Rebuilt The World · starting point</span>
+          </div>
+          <h1>Build clearly. Preserve meaning. Carry it forward.</h1>
+          <p class="hero-lead">
+            Rebuilt The World is a Human &amp; AI gateway for people who want to build with intention,
+            preserve what matters, and leave behind something others can still understand later.
+          </p>
+          <p class="hero-copy">
+            <strong>rebuilttheworld.org</strong> is the calm public entry layer: the place where the mission,
+            the structure, the archive logic, and the deeper connections become readable.
+            It is not the whole system. It is the clean front door.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#about">Explore the system</a>
+            <a class="button button-secondary" href="#genesis">See the Genesis connection</a>
+            <a class="button button-secondary" href="#ecosystem">Open the domain map</a>
+          </div>
+          <div class="hero-note">
+            <span class="note-pill">Public layer</span>
+            <span class="note-pill">Living LAB</span>
+            <span class="note-pill">Archive + proof</span>
+            <span class="note-pill">Multi-generational continuity</span>
+          </div>
+        </div>
+
+        <aside class="hero-side">
+          <div>
+            <p class="side-title">What this homepage should do</p>
+            <ol class="side-list">
+              <li>Explain what RTW is without overwhelming first-time visitors.</li>
+              <li>Show how the public layer, LAB, archive, and proof mindset fit together.</li>
+              <li>Create a visible bridge to the Genesis Project as an origin anchor.</li>
+              <li>Clarify the role of the wider domain ecosystem.</li>
+            </ol>
+          </div>
+          <div class="mono-box">
+            rebuilttheworld.org → public gateway
+            <br />rebuilttheworld.com → exploration / signals / puzzle field
+            <br />bittium1.com → tools / programs / practical gateways
+            <br />elkanthebook.com → author / publication layer (proposed)
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="about">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <p class="section-label">About</p>
+            <h2 class="section-title">A readable gateway into a deeper system</h2>
+            <p class="section-intro">
+              RTW is not only a website, not only an archive, and not only a blockchain-adjacent idea.
+              It is a layered environment for Human &amp; AI collaboration, self-directed growth, documentation,
+              continuity, and future-readable legacy building.
+            </p>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <article class="panel">
+            <h3>What RTW is</h3>
+            <p>
+              A mission-driven system for building, documenting, preserving, and passing forward meaningful work.
+              It is designed for builders, thinkers, future readers, and people whose value is too easily overlooked
+              by conventional paths.
+            </p>
+          </article>
+          <article class="panel">
+            <h3>Why .org starts the journey</h3>
+            <p>
+              The .org layer is the clean point of entry. It gives context before complexity, structure before signals,
+              and explanation before deeper exploration. It is where the system becomes understandable.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="layers">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <p class="section-label">Layers</p>
+            <h2 class="section-title">A layered system, not a single page</h2>
+            <p class="section-intro">
+              The homepage should make the system legible at a glance: orientation first, then working depth,
+              then preservation, then proof-minded continuity.
+            </p>
+          </div>
+        </div>
+
+        <div class="layers-grid">
+          <article class="layer-card">
+            <div class="layer-tag">Layer 01</div>
+            <h3>Public gateway</h3>
+            <p>Definition, mission, entry points, and a stable first reading of the RTW world.</p>
+          </article>
+          <article class="layer-card">
+            <div class="layer-tag">Layer 02</div>
+            <h3>Living LAB</h3>
+            <p>Where Human &amp; AI collaboration stays active: experiments, methods, drafts, and working models.</p>
+          </article>
+          <article class="layer-card">
+            <div class="layer-tag">Layer 03</div>
+            <h3>Archive</h3>
+            <p>Preserved records, releases, field notes, and continuity that stays readable across time.</p>
+          </article>
+          <article class="layer-card">
+            <div class="layer-tag">Layer 04</div>
+            <h3>Proof mindset</h3>
+            <p>Versioning, manifests, hashes, timestamps, and origin records that reduce ambiguity later.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="genesis">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <p class="section-label">Genesis connection</p>
+            <h2 class="section-title">An origin anchor inside the wider RTW ecosystem</h2>
+            <p class="section-intro">
+              The Genesis Project should not feel detached from RTW. It can act as an origin-facing archival anchor:
+              a proof-bearing example of how public record, verification, and continuity work together.
+            </p>
+          </div>
+        </div>
+
+        <div class="genesis-grid">
+          <article class="genesis-card primary">
+            <div class="genesis-tag">Origin · archive · verification</div>
+            <h3>Genesis Project as a continuity bridge</h3>
+            <p>
+              On the homepage, Genesis should appear as a visible but disciplined connection: not as a separate world,
+              but as one of the clearest examples of RTW’s archive and proof logic in public form.
+            </p>
+            <p class="quote">
+              From origin to continuity: what matters should not only be created — it should remain legible,
+              verifiable, and passable to the future.
+            </p>
+          </article>
+
+          <div class="stack">
+            <article class="genesis-card">
+              <div class="genesis-tag">What it contributes</div>
+              <h3>Proof-bearing origin record</h3>
+              <p>
+                A model for timestamped archival release, bilingual public record, manifest logic,
+                and a durable relationship between meaning and verification.
+              </p>
+            </article>
+            <article class="genesis-card">
+              <div class="genesis-tag">Homepage use</div>
+              <h3>Clear, calm, linkable</h3>
+              <p>
+                Give Genesis its own homepage card or section with a clean CTA. It should feel like an anchor point,
+                not a distraction.
+              </p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="mission">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <p class="section-label">Mission</p>
+            <h2 class="section-title">A future worth building must protect the vulnerable</h2>
+            <p class="section-intro">
+              One of RTW’s important mission lines is the protection and support of children and young people,
+              especially those who are disadvantaged, ill, disabled, excluded, or too easily overlooked.
+            </p>
+          </div>
+        </div>
+
+        <div class="callout">
+          <p>
+            This should appear on the homepage as a real moral pillar — calm, visible, and serious.
+            Not decorative language. Not performance. A system that speaks about the future must also care about dignity,
+            access, support, and hidden potential.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="ecosystem">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <p class="section-label">Domain ecosystem</p>
+            <h2 class="section-title">One world, multiple entry surfaces</h2>
+            <p class="section-intro">
+              The domains do not need to compete with each other. They can each hold a distinct role inside the same system.
+            </p>
+          </div>
+        </div>
+
+        <div class="domain-grid">
+          <article class="domain-card">
+            <div class="domain-tag">Primary start</div>
+            <h3>rebuilttheworld.org</h3>
+            <p>The public gateway: clean orientation, mission, system map, archive logic, and first entry paths.</p>
+            <span class="domain-link">Start here</span>
+          </article>
+          <article class="domain-card">
+            <div class="domain-tag">Exploration layer</div>
+            <h3>rebuilttheworld.com</h3>
+            <p>The more exploratory side: signals, layered discovery, puzzle energy, and deeper breadcrumb-style entry.</p>
+            <a class="domain-link" href="https://rebuilttheworld.com" target="_blank" rel="noreferrer">Open .com ↗</a>
+          </article>
+          <article class="domain-card">
+            <div class="domain-tag">Tools gateway</div>
+            <h3>bittium1.com</h3>
+            <p>The functional portal for usable programs, tools, utilities, and practical entry points connected to your work.</p>
+            <a class="domain-link" href="https://bittium1.com" target="_blank" rel="noreferrer">Open Bittium1 ↗</a>
+          </article>
+          <article class="domain-card">
+            <div class="domain-tag">Proposed role</div>
+            <h3>elkanthebook.com</h3>
+            <p>An author-facing publication layer: narrative, books, writings, and personally signed public context.</p>
+            <a class="domain-link" href="https://elkanthebook.com" target="_blank" rel="noreferrer">Open ElkanTheBook ↗</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <p class="section-label">Entry paths</p>
+            <h2 class="section-title">Different ways to enter the same system</h2>
+            <p class="section-intro">
+              Not everyone enters RTW through the same door. The homepage should make that visible.
+            </p>
+          </div>
+        </div>
+
+        <div class="entry-grid">
+          <article class="entry-card">
+            <div class="entry-tag">Entry 01</div>
+            <h3>For builders</h3>
+            <p>People who want to create, test, document, and carry work forward with structure and continuity.</p>
+          </article>
+          <article class="entry-card">
+            <div class="entry-tag">Entry 02</div>
+            <h3>For thinkers</h3>
+            <p>People drawn to systems, meaning, interpretation, architecture, archives, and long-term questions.</p>
+          </article>
+          <article class="entry-card">
+            <div class="entry-tag">Entry 03</div>
+            <h3>For future readers</h3>
+            <p>People arriving later who need clarity, preserved context, and readable traces that still make sense.</p>
+          </article>
+          <article class="entry-card">
+            <div class="entry-tag">Entry 04</div>
+            <h3>For the overlooked</h3>
+            <p>People whose value, voice, or potential was not easily recognized by conventional systems.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell footer-grid">
+      <article class="foot-card">
+        <p class="section-label">Closing note</p>
+        <h3>rebuilttheworld.org should feel like a beginning that already remembers the future</h3>
+        <p>
+          Keep the homepage clean, readable, and strong. Let the deeper layers open gradually.
+          The first page should orient, not overwhelm.
+        </p>
+        <p class="footer-note">
+          Suggested first deployment focus: hero, about, layers, Genesis bridge, mission block, and domain ecosystem.
+        </p>
+      </article>
+      <article class="foot-card">
+        <p class="section-label">Implementation note</p>
+        <h3>Recommended file role</h3>
+        <p>
+          Use this as the standalone .org homepage prototype inside the <code>web/</code> workspace.
+          Once approved, it can be ported cleanly into the live site stack.
+        </p>
+        <p class="tiny">Logo path used here: <code>web/assets/logo/rebuilt-the-world-primary-dark.png</code></p>
+      </article>
+    </div>
+  </footer>
+</body>
+</html>
